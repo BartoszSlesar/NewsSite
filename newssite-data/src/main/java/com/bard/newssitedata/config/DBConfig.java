@@ -23,7 +23,7 @@ public class DBConfig {
     }
 
     @Bean
-    public ArticleRowMapper carRowMapper(){
+    public ArticleRowMapper newsRowMapper(){
         return new ArticleRowMapper();
     }
 }
