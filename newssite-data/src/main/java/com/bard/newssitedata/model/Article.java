@@ -43,13 +43,9 @@ public class Article {
         return source;
     }
 
-    @JsonProperty("source")
-    public void setSource(String source) {
-        this.source = source;
-    }
 
     @JsonProperty("source")
-    private void getSourceFromJson(Map<String, String> source) {
+    private void setSourceFromJson(Map<String, String> source) {
         this.source = source.getOrDefault("name", "");
     }
 

@@ -6,5 +6,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface NewsApiRepository {
-    List<Article> getCurrentNews(String topic ,LocalDate from, LocalDate to);
+    List<Article> getCurrentNews(String topic);
 }

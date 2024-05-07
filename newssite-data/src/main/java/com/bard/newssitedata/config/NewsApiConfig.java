@@ -19,5 +19,7 @@ public class NewsApiConfig {
 
     private String apiKey;
 
+    private String newsEndpoint;
+
 
 }

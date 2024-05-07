@@ -16,7 +16,7 @@ public class NewsService {
     private final NewsApiRepository newsApiRepository;
 
     public List<Article> getCurrentNews() {
-        return null;
+        return this.newsApiRepository.getCurrentNews("technology");
     }
 
     public boolean updateArticle(Article article) {
