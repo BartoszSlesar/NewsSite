@@ -5,6 +5,9 @@ package com.bard.newssitedata.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Map;
 
@@ -19,8 +22,11 @@ import java.util.Map;
         "publishedAt",
         "content"
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class Article {
 
+    private long articleId;
     @JsonProperty("source")
     private String source;
     @JsonProperty("author")
@@ -37,6 +43,15 @@ public class Article {
     private String publishedAt;
     @JsonProperty("content")
     private String content;
+
+
+    public long getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(long articleId) {
+        this.articleId = articleId;
+    }
 
     @JsonProperty("source")
     public String getSource() {
@@ -118,5 +133,6 @@ public class Article {
     public void setContent(String content) {
         this.content = content;
     }
+
 
 }

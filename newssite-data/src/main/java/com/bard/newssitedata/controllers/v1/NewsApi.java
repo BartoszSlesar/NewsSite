@@ -26,6 +26,7 @@ public class NewsApi {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<Article>> getCars() {
-        return new ResponseEntity<>(this.newsService.getCurrentNews(), HttpStatus.OK);
+        List<Article> articles = this.newsService.getCurrentNews();
+        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 }

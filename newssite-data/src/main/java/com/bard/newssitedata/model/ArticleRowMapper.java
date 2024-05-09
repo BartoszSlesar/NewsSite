@@ -8,13 +8,18 @@ import java.sql.SQLException;
 public class ArticleRowMapper implements RowMapper<Article> {
     @Override
     public Article mapRow(ResultSet rs, int rowNum) throws SQLException {
-//        return new Car(
-//                rs.getLong("car_id"),
-//                rs.getString("brand"),
-//                rs.getString("model"),
-//                rs.getString("color"),
-//                rs.getInt("year")
-//        );
-        return null;
+        return new Article(
+                rs.getLong("article_id"),
+                rs.getString("news_source"),
+                rs.getString("author"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getString("source_url"),
+                rs.getString("image_url"),
+                rs.getString("published_at"),
+                rs.getString("content")
+
+        );
+
     }
 }

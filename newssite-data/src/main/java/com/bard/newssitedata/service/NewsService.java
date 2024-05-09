@@ -16,7 +16,12 @@ public class NewsService {
     private final NewsApiRepository newsApiRepository;
 
     public List<Article> getCurrentNews() {
-        return this.newsApiRepository.getCurrentNews("technology");
+        List<Article> articles = this.databaseNewsRepository.getArticles();
+        if (articles.isEmpty()) {
+            articles = this.newsApiRepository.getCurrentNews("technology");
+            this.databaseNewsRepository.saveArticle(articles);
+        }
+        return articles;
     }
 
     public boolean updateArticle(Article article) {
