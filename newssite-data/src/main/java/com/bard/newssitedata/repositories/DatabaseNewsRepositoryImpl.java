@@ -1,10 +1,9 @@
 package com.bard.newssitedata.repositories;
 
+import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.Article;
 import com.bard.newssitedata.model.ArticleRowMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.util.StringUtil;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,7 +15,6 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Repository
@@ -26,6 +24,9 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
     private final ArticleRowMapper articleRowMapper;
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final ResultsConfig resultsConfig;
+
 
     private final String INSERT_SQL = "INSERT INTO news (" +
             "news_source," +
@@ -40,13 +41,19 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
 
 
     @Override
-    public List<Article> getArticles() {
+    public List<Article> getArticles(int page, int limit) {
         DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        TODO zmienić na date dzisiejsza
         String currentDate = LocalDateTime.now().format(currentDateFormatter);
+        if (page < 1) {
+            page = 1;
+        }
+        if (limit < 1 || limit > resultsConfig.getLimit()) {
+            limit = resultsConfig.getLimit();
+        }
+        int offset = (page - 1) * limit;
 
-        String sql = "SELECT * FROM news WHERE published_at LIKE ?";
-        return this.jdbcTemplate.query(sql, this.articleRowMapper, "2024-05-08%");
+        String sql = "SELECT * FROM news WHERE published_at LIKE ? OFFSET ? LIMIT ?";
+        return this.jdbcTemplate.query(sql, this.articleRowMapper, currentDate + "%", offset, limit);
     }
 
     @Override

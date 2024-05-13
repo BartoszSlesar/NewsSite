@@ -11,7 +11,7 @@ public interface DatabaseNewsRepository {
 
 
 
-    List<Article> getArticles();
+    List<Article> getArticles(int page, int limit);
 
     void saveArticle(Article article);
 

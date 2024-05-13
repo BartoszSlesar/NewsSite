@@ -26,7 +26,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class Article {
 
+
     private long articleId;
+
+
     @JsonProperty("source")
     private String source;
     @JsonProperty("author")
@@ -133,6 +136,5 @@ public class Article {
     public void setContent(String content) {
         this.content = content;
     }
-
 
 }

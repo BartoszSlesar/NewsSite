@@ -22,4 +22,5 @@ public class NewsApiConfig {
     private String newsEndpoint;
 
 
+
 }
