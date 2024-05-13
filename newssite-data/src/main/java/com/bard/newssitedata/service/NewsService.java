@@ -2,6 +2,7 @@ package com.bard.newssitedata.service;
 
 import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.Article;
+import com.bard.newssitedata.model.ArticlesPages;
 import com.bard.newssitedata.repositories.DatabaseNewsRepository;
 import com.bard.newssitedata.repositories.NewsApiRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +18,16 @@ public class NewsService {
     private final NewsApiRepository newsApiRepository;
     private final ResultsConfig resultsConfig;
 
-    public List<Article> getCurrentNews() {
+    public ArticlesPages getCurrentNews() {
         return this.getCurrentNews(1, resultsConfig.getLimit());
     }
 
-    public List<Article> getCurrentNews(int page, int limit) {
-        List<Article> articles = this.databaseNewsRepository.getArticles(page, limit);
-        if (articles.isEmpty()) {
-            articles = this.newsApiRepository.getCurrentNews("technology", page, limit);
-            this.databaseNewsRepository.saveArticle(articles);
+    public ArticlesPages getCurrentNews(int page, int limit) {
+        ArticlesPages articles = this.databaseNewsRepository.getArticles(page, limit);
+        if (articles.getResults().isEmpty()) {
+            List<Article> articleList = this.newsApiRepository.getCurrentNews("technology", page, limit);
+            articles.setResults(articleList);
+            this.databaseNewsRepository.saveArticle(articleList);
         }
         return articles;
     }

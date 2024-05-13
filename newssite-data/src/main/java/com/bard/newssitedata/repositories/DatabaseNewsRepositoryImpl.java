@@ -3,6 +3,7 @@ package com.bard.newssitedata.repositories;
 import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.Article;
 import com.bard.newssitedata.model.ArticleRowMapper;
+import com.bard.newssitedata.model.ArticlesPages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -41,9 +42,10 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
 
 
     @Override
-    public List<Article> getArticles(int page, int limit) {
+    public ArticlesPages getArticles(int page, int limit) {
         DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String currentDate = LocalDateTime.now().format(currentDateFormatter);
+//        String currentDate = LocalDateTime.now().format(currentDateFormatter);
+        String currentDate = "2024-05-08";
         if (page < 1) {
             page = 1;
         }
@@ -53,7 +55,15 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
         int offset = (page - 1) * limit;
 
         String sql = "SELECT * FROM news WHERE published_at LIKE ? OFFSET ? LIMIT ?";
-        return this.jdbcTemplate.query(sql, this.articleRowMapper, currentDate + "%", offset, limit);
+        List<Article> articles = this.jdbcTemplate.query(sql, this.articleRowMapper, currentDate + "%", offset, limit);
+        int rowCount = getRowCount(currentDate);
+        return new ArticlesPages(rowCount, articles);
+    }
+
+    private int getRowCount(String filter) {
+        String sql = "SELECT count(article_id) FROM news WHERE published_at LIKE ?";
+        Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class, filter+"%");
+        return count == null ? 0 : count;
     }
 
     @Override

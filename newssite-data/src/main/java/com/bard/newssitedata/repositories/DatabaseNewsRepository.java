@@ -1,6 +1,7 @@
 package com.bard.newssitedata.repositories;
 
 import com.bard.newssitedata.model.Article;
+import com.bard.newssitedata.model.ArticlesPages;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface DatabaseNewsRepository {
 
 
 
-    List<Article> getArticles(int page, int limit);
+    ArticlesPages getArticles(int page, int limit);
 
     void saveArticle(Article article);
 

@@ -23,12 +23,10 @@ import java.util.Map;
         "content"
 })
 @NoArgsConstructor
-@AllArgsConstructor
 public class Article {
 
 
     private long articleId;
-
 
     @JsonProperty("source")
     private String source;
@@ -47,6 +45,26 @@ public class Article {
     @JsonProperty("content")
     private String content;
 
+
+    public Article(long articleId,
+                   String source,
+                   String author,
+                   String title,
+                   String description,
+                   String url,
+                   String urlToImage,
+                   String publishedAt,
+                   String content) {
+        this.articleId = articleId;
+        this.source = source;
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.url = url;
+        this.urlToImage = urlToImage;
+        this.publishedAt = publishedAt;
+        this.content = content;
+    }
 
     public long getArticleId() {
         return articleId;
