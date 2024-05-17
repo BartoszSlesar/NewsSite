@@ -4,6 +4,7 @@ package com.bard.newssitedata.repositories;
 import com.bard.newssitedata.config.NewsApiConfig;
 import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.Article;
+import com.bard.newssitedata.model.ArticlesPages;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,8 @@ public class NewsApiRepositoryImpl implements NewsApiRepository {
             limit = resultsConfig.getLimit();
         }
         DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String currentDate = LocalDateTime.now().format(currentDateFormatter);
+//        String currentDate = LocalDateTime.now().format(currentDateFormatter);
+        String currentDate = "2024-05-16";
         String endpoint = this.newsApiConfig.getNewsEndpoint()
                 + "?q="
                 + topic
@@ -54,6 +56,7 @@ public class NewsApiRepositoryImpl implements NewsApiRepository {
                 + "&apiKey=" + this.newsApiConfig.getApiKey();
 
         String rawResponse = this.restClient.get().uri(endpoint).retrieve().body(String.class);
+//        ArticlesPages response = this.restClient.get().uri(endpoint).retrieve().body(ArticlesPages.class);
 
         List<Article> articles = new ArrayList<>();
         try {

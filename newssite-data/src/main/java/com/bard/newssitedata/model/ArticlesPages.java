@@ -20,7 +20,7 @@ import java.util.List;
 })
 public class ArticlesPages {
 
-    @JsonProperty("total_pages")
+    @JsonProperty("totalResults")
     private int totalPages;
 
     @JsonProperty("articles")

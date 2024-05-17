@@ -5,11 +5,12 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ArticleRowMapper implements RowMapper<Article> {
+public class NewsRowMapper implements RowMapper<News> {
     @Override
-    public Article mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Article(
+    public News mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new News(
                 rs.getLong("article_id"),
+                rs.getString("news_id"),
                 rs.getString("news_source"),
                 rs.getString("author"),
                 rs.getString("title"),

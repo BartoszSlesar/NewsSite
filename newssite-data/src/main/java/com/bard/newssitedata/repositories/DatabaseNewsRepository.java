@@ -1,26 +1,21 @@
 package com.bard.newssitedata.repositories;
 
-import com.bard.newssitedata.model.Article;
-import com.bard.newssitedata.model.ArticlesPages;
+import com.bard.newssitedata.model.News;
 
 import java.util.List;
-
-
 
 
 public interface DatabaseNewsRepository {
 
 
+    List<News> getNews(int page, int limit);
 
-    ArticlesPages getArticles(int page, int limit);
 
-    void saveArticle(Article article);
+    List<News> saveNews(List<News> articles);
 
-    void saveArticle(List<Article> articles);
+    void updateNews(News news);
 
-    void updateArticle(Article article);
-
-    void deleteArticle(long id);
+    void deleteNews(long id);
 
 
 }

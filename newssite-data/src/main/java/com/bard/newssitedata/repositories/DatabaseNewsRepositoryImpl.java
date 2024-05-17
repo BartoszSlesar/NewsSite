@@ -1,9 +1,7 @@
 package com.bard.newssitedata.repositories;
 
 import com.bard.newssitedata.config.ResultsConfig;
-import com.bard.newssitedata.model.Article;
-import com.bard.newssitedata.model.ArticleRowMapper;
-import com.bard.newssitedata.model.ArticlesPages;
+import com.bard.newssitedata.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -15,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
 
-    private final ArticleRowMapper articleRowMapper;
+    private final NewsRowMapper newsRowMapper;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -30,6 +29,7 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
 
 
     private final String INSERT_SQL = "INSERT INTO news (" +
+            "news_id," +
             "news_source," +
             "author," +
             "title," +
@@ -38,14 +38,15 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
             "image_url," +
             "published_at," +
             "content" +
-            ") VALUES (?,?,?,?,?,?,?,?)";
+            ") VALUES (?,?,?,?,?,?,?,?,?) WHERE NOT EXISTS (SELECT news_id FROM news WHERE news_id=?)";
 
 
     @Override
-    public ArticlesPages getArticles(int page, int limit) {
+    public List<News> getNews(int page, int limit) {
         DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //        String currentDate = LocalDateTime.now().format(currentDateFormatter);
-        String currentDate = "2024-05-08";
+        String currentDate = "2024-05-16";
+
         if (page < 1) {
             page = 1;
         }
@@ -55,59 +56,63 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
         int offset = (page - 1) * limit;
 
         String sql = "SELECT * FROM news WHERE published_at LIKE ? OFFSET ? LIMIT ?";
-        List<Article> articles = this.jdbcTemplate.query(sql, this.articleRowMapper, currentDate + "%", offset, limit);
-        int rowCount = getRowCount(currentDate);
-        return new ArticlesPages(rowCount, articles);
+        return this.jdbcTemplate.query(sql, this.newsRowMapper, currentDate + "%", offset, limit);
+
+
     }
 
-    private int getRowCount(String filter) {
-        String sql = "SELECT count(article_id) FROM news WHERE published_at LIKE ?";
-        Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class, filter+"%");
-        return count == null ? 0 : count;
-    }
 
-    @Override
-    public void saveArticle(Article article) {
-        updateDatabase(article);
-    }
 
     @Override
     @Transactional
-    public void saveArticle(List<Article> articles) {
-        for (Article article : articles) {
+    public List<News> saveNews(List<News> newsList) {
+        List<News> removedDuplicated = new ArrayList<>();
+        for (News news : newsList) {
 
-            updateDatabase(article);
-
+            News tmpNews = updateDatabase(news);
+            if (tmpNews.getArticleId() >= 0) {
+                removedDuplicated.add(tmpNews);
+            }
 
         }
 
+        return removedDuplicated;
+
     }
 
-    private void updateDatabase(Article article) {
+    private News updateDatabase(News news) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.jdbcTemplate.update(con -> {
             PreparedStatement ps = con
                     .prepareStatement(this.INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, article.getSource());
-            ps.setString(2, article.getAuthor());
-            ps.setString(3, article.getTitle());
-            ps.setString(4, article.getDescription());
-            ps.setString(5, article.getUrl());
-            ps.setString(6, article.getUrlToImage());
-            ps.setString(7, article.getPublishedAt());
-            ps.setString(8, article.getContent());
+            ps.setString(1, news.getNewsId());
+            ps.setString(2, news.getSource());
+            ps.setString(3, news.getAuthor());
+            ps.setString(4, news.getTitle());
+            ps.setString(5, news.getDescription());
+            ps.setString(6, news.getUrl());
+            ps.setString(7, news.getUrlToImage());
+            ps.setString(8, news.getPublishedAt());
+            ps.setString(9, news.getContent());
             return ps;
         }, keyHolder);
-        article.setArticleId((int) keyHolder.getKeys().get("article_id"));
+
+        if (keyHolder.getKeys() != null) {
+            news.setArticleId((int) keyHolder.getKeys().get("article_id"));
+        } else {
+            news.setArticleId(-1);
+        }
+
+        return news;
     }
 
     @Override
-    public void updateArticle(Article article) {
+    public void updateNews(News news) {
 
     }
 
     @Override
-    public void deleteArticle(long id) {
+    public void deleteNews(long id) {
 
     }
 }

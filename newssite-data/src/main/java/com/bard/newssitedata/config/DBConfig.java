@@ -1,8 +1,8 @@
 package com.bard.newssitedata.config;
 
 
-
-import com.bard.newssitedata.model.ArticleRowMapper;
+import com.bard.newssitedata.model.NewsRowMapper;
+import com.bard.newssitedata.utils.ArticleNewsConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,13 @@ public class DBConfig {
     }
 
     @Bean
-    public ArticleRowMapper newsRowMapper(){
-        return new ArticleRowMapper();
+    public NewsRowMapper newsRowMapper() {
+        return new NewsRowMapper();
+    }
+
+
+    @Bean
+    public ArticleNewsConverter articleNewsConverter() {
+        return new ArticleNewsConverter();
     }
 }

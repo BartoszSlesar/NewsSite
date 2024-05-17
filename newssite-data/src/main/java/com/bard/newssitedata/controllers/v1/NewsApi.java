@@ -2,8 +2,7 @@ package com.bard.newssitedata.controllers.v1;
 
 
 import com.bard.newssitedata.config.ResultsConfig;
-import com.bard.newssitedata.model.Article;
-import com.bard.newssitedata.model.ArticlesPages;
+import com.bard.newssitedata.model.News;
 import com.bard.newssitedata.service.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,18 +26,18 @@ public class NewsApi {
     @GetMapping(produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<ArticlesPages> getNews() {
-        ArticlesPages articles = this.newsService.getCurrentNews(1, resultsConfig.getLimit());
-        return new ResponseEntity<>(articles, HttpStatus.OK);
+    public ResponseEntity<List<News>> getNews() {
+        List<News> news = this.newsService.getCurrentNews(1, resultsConfig.getLimit());
+        return new ResponseEntity<>(news, HttpStatus.OK);
     }
 
     @GetMapping(params = {"page", "limit"}, produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<ArticlesPages> getNews(
+    public ResponseEntity<List<News>> getNews(
             @RequestParam(name = "page", required = false) int page,
             @RequestParam(name = "limit", required = false) int limit) {
-        ArticlesPages articles = this.newsService.getCurrentNews(page, limit);
-        return new ResponseEntity<>(articles, HttpStatus.OK);
+        List<News> news = this.newsService.getCurrentNews(page, limit);
+        return new ResponseEntity<>(news, HttpStatus.OK);
     }
 }

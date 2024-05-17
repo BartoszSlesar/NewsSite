@@ -2,9 +2,10 @@ package com.bard.newssitedata.service;
 
 import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.Article;
-import com.bard.newssitedata.model.ArticlesPages;
+import com.bard.newssitedata.model.News;
 import com.bard.newssitedata.repositories.DatabaseNewsRepository;
 import com.bard.newssitedata.repositories.NewsApiRepository;
+import com.bard.newssitedata.utils.ArticleNewsConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,22 @@ public class NewsService {
     private final DatabaseNewsRepository databaseNewsRepository;
     private final NewsApiRepository newsApiRepository;
     private final ResultsConfig resultsConfig;
+    private final ArticleNewsConverter articleNewsConverter;
 
-    public ArticlesPages getCurrentNews() {
+    public List<News> getCurrentNews() {
         return this.getCurrentNews(1, resultsConfig.getLimit());
     }
 
-    public ArticlesPages getCurrentNews(int page, int limit) {
-        ArticlesPages articles = this.databaseNewsRepository.getArticles(page, limit);
-        if (articles.getResults().isEmpty()) {
+    public List<News> getCurrentNews(int page, int limit) {
+        List<News> news = this.databaseNewsRepository.getNews(page, limit);
+        if (news.isEmpty() || (news.size() < limit && page > 1)) {
             List<Article> articleList = this.newsApiRepository.getCurrentNews("technology", page, limit);
-            articles.setResults(articleList);
-            this.databaseNewsRepository.saveArticle(articleList);
+            List<News> convertedArticles = this.articleNewsConverter.convertArticles(articleList);
+            convertedArticles = this.databaseNewsRepository.saveNews(convertedArticles);
+            news.addAll(convertedArticles);
+
         }
-        return articles;
+        return news;
     }
 
     public boolean updateArticle(Article article) {
