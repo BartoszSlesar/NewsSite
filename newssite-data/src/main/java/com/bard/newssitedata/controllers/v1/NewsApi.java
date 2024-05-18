@@ -38,6 +38,7 @@ public class NewsApi {
             @RequestParam(name = "page", required = false) int page,
             @RequestParam(name = "limit", required = false) int limit) {
         List<News> news = this.newsService.getCurrentNews(page, limit);
+//        TODO Naprawić to jutro, zwraca 500
         return new ResponseEntity<>(news, HttpStatus.OK);
     }
 }

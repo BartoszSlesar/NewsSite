@@ -55,20 +55,10 @@ public class NewsApiRepositoryImpl implements NewsApiRepository {
                 + "&pageSize=" + limit
                 + "&apiKey=" + this.newsApiConfig.getApiKey();
 
-        String rawResponse = this.restClient.get().uri(endpoint).retrieve().body(String.class);
-//        ArticlesPages response = this.restClient.get().uri(endpoint).retrieve().body(ArticlesPages.class);
 
-        List<Article> articles = new ArrayList<>();
-        try {
-            ObjectMapper jsonObjectMapper = new ObjectMapper();
-            JsonNode rawArticles = jsonObjectMapper.readTree(rawResponse).get("articles");
-            for (JsonNode objNode : rawArticles) {
-                articles.add(jsonObjectMapper.treeToValue(objNode, Article.class));
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return articles;
+        ArticlesPages response = this.restClient.get().uri(endpoint).retrieve().body(ArticlesPages.class);
+
+        return response == null ? new ArrayList<>() : response.getResults();
     }
 
 

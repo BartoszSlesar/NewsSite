@@ -38,7 +38,7 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
             "image_url," +
             "published_at," +
             "content" +
-            ") VALUES (?,?,?,?,?,?,?,?,?) WHERE NOT EXISTS (SELECT news_id FROM news WHERE news_id=?)";
+            ") SELECT ?,?,?,?,?,?,?,?,? WHERE NOT EXISTS (SELECT news_id FROM news WHERE news_id=?)";
 
 
     @Override
@@ -94,6 +94,7 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
             ps.setString(7, news.getUrlToImage());
             ps.setString(8, news.getPublishedAt());
             ps.setString(9, news.getContent());
+            ps.setString(10, news.getNewsId());
             return ps;
         }, keyHolder);
 
