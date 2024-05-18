@@ -21,13 +21,13 @@ public class NewsService {
     private final ArticleNewsConverter articleNewsConverter;
 
     public List<News> getCurrentNews() {
-        return this.getCurrentNews(1, resultsConfig.getLimit());
+        return this.getCurrentNews(1, resultsConfig.getLimit(), "");
     }
 
-    public List<News> getCurrentNews(int page, int limit) {
-        List<News> news = this.databaseNewsRepository.getNews(page, limit);
+    public List<News> getCurrentNews(int page, int limit, String date) {
+        List<News> news = this.databaseNewsRepository.getNews(page, limit, date);
         if (news.isEmpty() || (news.size() < limit && page > 1)) {
-            List<Article> articleList = this.newsApiRepository.getCurrentNews("technology", page, limit);
+            List<Article> articleList = this.newsApiRepository.getCurrentNews("technology", page, limit, date);
             List<News> convertedArticles = this.articleNewsConverter.convertArticles(articleList);
             convertedArticles = this.databaseNewsRepository.saveNews(convertedArticles);
             news.addAll(convertedArticles);
@@ -36,11 +36,11 @@ public class NewsService {
         return news;
     }
 
-    public boolean updateArticle(Article article) {
-        return false;
+    public boolean updateArticle(News news) {
+        return this.databaseNewsRepository.updateNews(news);
     }
 
     public boolean removeArticle(long id) {
-        return false;
+        return this.databaseNewsRepository.deleteNews(id);
     }
 }

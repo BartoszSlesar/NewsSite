@@ -42,10 +42,14 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
 
 
     @Override
-    public List<News> getNews(int page, int limit) {
-        DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        String currentDate = LocalDateTime.now().format(currentDateFormatter);
-        String currentDate = "2024-05-16";
+    public List<News> getNews(int page, int limit, String date) {
+
+        if (date == null || date.isEmpty()) {
+            DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            date = LocalDateTime.now().format(currentDateFormatter);
+
+        }
+
 
         if (page < 1) {
             page = 1;
@@ -56,11 +60,10 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
         int offset = (page - 1) * limit;
 
         String sql = "SELECT * FROM news WHERE published_at LIKE ? OFFSET ? LIMIT ?";
-        return this.jdbcTemplate.query(sql, this.newsRowMapper, currentDate + "%", offset, limit);
+        return this.jdbcTemplate.query(sql, this.newsRowMapper, date + "%", offset, limit);
 
 
     }
-
 
 
     @Override
@@ -108,12 +111,34 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
     }
 
     @Override
-    public void updateNews(News news) {
-
+    public boolean updateNews(News news) {
+        String sql = "UPDATE news SET " +
+                "news_source=?," +
+                "author=?, " +
+                "title=?, " +
+                "description=?, " +
+                "source_url=?," +
+                "image_url=?," +
+                "published_at=?," +
+                "content=?" +
+                "WHERE article_id=?";
+        int result = this.jdbcTemplate.update(sql,
+                news.getSource(),
+                news.getAuthor(),
+                news.getTitle(),
+                news.getDescription(),
+                news.getUrl(),
+                news.getUrlToImage(),
+                news.getPublishedAt(),
+                news.getContent(),
+                news.getArticleId());
+        return result > 0;
     }
 
     @Override
-    public void deleteNews(long id) {
-
+    public boolean deleteNews(long id) {
+        String sql = "DELETE FROM news WHERE article_id=?";
+        int result = this.jdbcTemplate.update(sql, id);
+        return result > 0;
     }
 }

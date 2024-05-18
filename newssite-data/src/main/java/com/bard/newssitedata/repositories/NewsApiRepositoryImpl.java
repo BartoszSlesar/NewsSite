@@ -35,22 +35,23 @@ public class NewsApiRepositoryImpl implements NewsApiRepository {
 
 
     @Override
-    public List<Article> getCurrentNews(String topic, int page, int limit) {
+    public List<Article> getCurrentNews(String topic, int page, int limit, String date) {
         if (page < 1) {
             page = 1;
         }
         if (limit > resultsConfig.getLimit() || limit < 1) {
             limit = resultsConfig.getLimit();
         }
-        DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        String currentDate = LocalDateTime.now().format(currentDateFormatter);
-        String currentDate = "2024-05-16";
+        if (date == null || date.isEmpty()) {
+            DateTimeFormatter currentDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            date = LocalDateTime.now().format(currentDateFormatter);
+
+        }
         String endpoint = this.newsApiConfig.getNewsEndpoint()
                 + "?q="
                 + topic
-                + "&from=" + currentDate
-                + "&to=" + currentDate
-                + "&to=" + currentDate
+                + "&from=" + date
+                + "&to=" + date
                 + "&page=" + page
                 + "&pageSize=" + limit
                 + "&apiKey=" + this.newsApiConfig.getApiKey();
