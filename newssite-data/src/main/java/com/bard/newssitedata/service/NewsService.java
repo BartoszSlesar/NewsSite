@@ -43,4 +43,8 @@ public class NewsService {
     public boolean removeArticle(long id) {
         return this.databaseNewsRepository.deleteNews(id);
     }
+
+    public News getNewsByID(long id) {
+        return this.databaseNewsRepository.getNewsById(id);
+    }
 }

@@ -3,6 +3,7 @@ package com.bard.newssitedata.repositories;
 import com.bard.newssitedata.config.ResultsConfig;
 import com.bard.newssitedata.model.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -63,6 +64,16 @@ public class DatabaseNewsRepositoryImpl implements DatabaseNewsRepository {
         return this.jdbcTemplate.query(sql, this.newsRowMapper, date + "%", offset, limit);
 
 
+    }
+
+    @Override
+    public News getNewsById(long id) {
+        String sql = "SELECT * FROM news WHERE article_id=?";
+        try {
+            return this.jdbcTemplate.queryForObject(sql, this.newsRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 

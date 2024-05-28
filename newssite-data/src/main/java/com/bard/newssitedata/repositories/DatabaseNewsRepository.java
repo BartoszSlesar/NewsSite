@@ -10,6 +10,8 @@ public interface DatabaseNewsRepository {
 
     List<News> getNews(int page, int limit, String date);
 
+    News getNewsById(long id);
+
 
     List<News> saveNews(List<News> articles);
 

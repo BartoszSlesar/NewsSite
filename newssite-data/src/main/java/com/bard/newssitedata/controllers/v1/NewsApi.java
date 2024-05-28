@@ -44,6 +44,20 @@ public class NewsApi {
     }
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<News> getNewsById(@PathVariable long id) {
+        News news = this.newsService.getNewsByID(id);
+        ResponseEntity<News> responseEntity;
+        if (news != null) {
+            responseEntity = new ResponseEntity<>(news, HttpStatus.OK);
+        } else {
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return responseEntity;
+    }
+
+
     @PutMapping
     public ResponseEntity<String> modifyNews(@Validated @RequestBody News updatedNews) {
         boolean result = this.newsService.updateArticle(updatedNews);
