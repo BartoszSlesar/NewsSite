@@ -20,8 +20,7 @@ export default async function NewsResults({
     const date = "2024-05-16";
     const queryParams = new URLSearchParams()
     const limit = 10;
-    const totalPages = 10
-    queryParams.append("page", page > totalPages ? "10" : page.toString())
+    queryParams.append("page", page.toString())
     queryParams.append("limit", limit.toString())
     queryParams.append("date", date)
     const news = await getNewsByQuery("?".concat(queryParams.toString()));
@@ -29,18 +28,18 @@ export default async function NewsResults({
 
     return (
         <div className="grow space-y-4">
-            {news.map((news: News) => (
+            {news.results.map((news: News) => (
                 <Link key={news.articleId} href={`/cars/${news.articleId}`} className="block">
                     <NewsListItem news={news}/>
                 </Link>
             ))}
-            {news.length === 0 && (
+            {news.results.length === 0 && (
                 <p className="m-auto text-center">
                     No News was Found.
                 </p>
             )}
-            {news.length > 0 && (
-                <Pagination currentPage={page} totalPages={Math.ceil(totalPages)}/>
+            {news.results.length > 0 && (
+                <Pagination currentPage={page} totalPages={Math.ceil(news.totalPages / limit)}/>
             )}
         </div>
     );
