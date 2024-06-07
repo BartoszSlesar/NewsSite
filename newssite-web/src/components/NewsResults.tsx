@@ -29,7 +29,7 @@ export default async function NewsResults({
     return (
         <div className="grow space-y-4">
             {news.results.map((news: News) => (
-                <Link key={news.articleId} href={`/cars/${news.articleId}`} className="block">
+                <Link key={news.articleId} href={`/news/${news.articleId}`} className="block">
                     <NewsListItem news={news}/>
                 </Link>
             ))}

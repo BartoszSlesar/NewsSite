@@ -11,7 +11,7 @@ export default function Markdown({ children }: MarkdownProps) {
       components={{
         ul: (props) => <ul className="list-inside list-disc" {...props} />,
         a: (props) => (
-          <a className="text-green-500 underline" target="_blank" {...props} />
+          <a className="text-emerald-500 underline" target="_blank" {...props} />
         ),
       }}
     >

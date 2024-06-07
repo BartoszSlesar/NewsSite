@@ -1,12 +1,12 @@
 export interface News {
-  articleId?: number
+  articleId?: string
   source: string;
   author: string
   title: string
   description: string;
   url: string;
   urlToImage: string;
-  publishedAt: string;
+  publishedAt?: string;
   content: string;
 }
 
